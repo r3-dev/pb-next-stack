@@ -1,6 +1,8 @@
+"use client";
+
 import usePocketBase from "@/pocketbase/pb-hook";
 import Record from "pocketbase";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface UserModel extends Record {
   avatar: number;
@@ -11,9 +13,13 @@ interface UserModel extends Record {
 function AuthShowcase() {
   const { pb } = usePocketBase();
   const [count, setCount] = useState(0);
-  const user = pb.authStore.model as UserModel;
+  const [user, setUser] = useState<UserModel | null>(null);
 
-  if (pb.authStore.isValid) {
+  useEffect(() => {
+    setUser(pb.authStore.model as UserModel);
+  }, []);
+
+  if (pb.authStore.isValid && user) {
     return (
       <>
         <Logout />
